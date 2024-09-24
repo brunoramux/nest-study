@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: 'nest-study-postgres'
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=nest
+      - POSTGRES_PASSWORD=nest
+      - POSTGRES_DB=nest
+      - PGDATA=/data/postgres
+    volumes: 
+      - ./data/pg:/data/postgres
