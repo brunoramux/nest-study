@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Inject,
   Post,
   UsePipes,
@@ -28,6 +30,18 @@ export class CreateAccountController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
-    console.log('Chegou no controller')
+    const { email, name, password } = body
+
+    const result = await this.createAccount.execute({
+      email,
+      name,
+      password,
+    })
+
+    if (result.isLeft()) {
+      const error = result.value
+
+      throw new HttpException(error.message, HttpStatus.CONFLICT)
+    }
   }
 }

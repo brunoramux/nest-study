@@ -30,4 +30,8 @@ export class Account {
   get getPassword() {
     return this.password
   }
+
+  get getId() {
+    return this.id
+  }
 }

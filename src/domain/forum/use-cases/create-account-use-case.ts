@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Account } from '../entities/account'
 import { left, right, Either } from '../../../errors/either'
 import { AccountRepository } from '../repositories/account-respository'
+import { hash } from 'bcryptjs'
 
 interface CreateAcountUseCaseRequest {
   name: string
@@ -25,10 +26,12 @@ export class CreateAccountUseCase {
       return left(new Error(`Student ${name} already exists`))
     }
 
+    const passwordHashed = await hash(password, 8)
+
     const account = new Account({
       name,
       email,
-      password,
+      password: passwordHashed,
     })
 
     await this.accountRepository.create(account)

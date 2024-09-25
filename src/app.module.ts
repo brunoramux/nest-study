@@ -8,6 +8,10 @@ import { PrismaService } from './database/prisma/prisma.service'
 import { AccountRepository } from './domain/forum/repositories/account-respository'
 import { PrismaAccountRepository } from './database/repositories/prisma-account-repository'
 import { EnvModule } from './env/env.module'
+import { TokenGenerator } from './domain/forum/cryptography/token-generator'
+import { JwtGenerator } from './criptography/token-generator'
+import { AuthenticateWithPasswordController } from './http/controllers/auth/authenticate-with-password.controller'
+import { AuthenticateWithPasswordUseCase } from './domain/forum/use-cases/authenticate-with-password-use-case'
 
 @Module({
   imports: [
@@ -18,15 +22,17 @@ import { EnvModule } from './env/env.module'
     AuthModule,
     EnvModule,
   ],
-  controllers: [CreateAccountController],
+  controllers: [CreateAccountController, AuthenticateWithPasswordController],
   providers: [
     CreateAccountUseCase,
+    AuthenticateWithPasswordUseCase,
     PrismaService,
     {
       provide: AccountRepository,
       useClass: PrismaAccountRepository,
     },
+    { provide: TokenGenerator, useClass: JwtGenerator },
   ],
-  exports: [PrismaService, AccountRepository],
+  exports: [PrismaService, AccountRepository, TokenGenerator],
 })
 export class AppModule {}
