@@ -12,6 +12,9 @@ import { TokenGenerator } from './domain/forum/cryptography/token-generator'
 import { JwtGenerator } from './criptography/token-generator'
 import { AuthenticateWithPasswordController } from './http/controllers/auth/authenticate-with-password.controller'
 import { AuthenticateWithPasswordUseCase } from './domain/forum/use-cases/authenticate-with-password-use-case'
+import { Uploader } from './domain/forum/storage/uploader'
+import { R2Storage } from './storage/r2-storage'
+import { UploadAttachmentController } from './http/controllers/attachment/upload-attachment.controller'
 
 @Module({
   imports: [
@@ -22,7 +25,11 @@ import { AuthenticateWithPasswordUseCase } from './domain/forum/use-cases/authen
     AuthModule,
     EnvModule,
   ],
-  controllers: [CreateAccountController, AuthenticateWithPasswordController],
+  controllers: [
+    CreateAccountController,
+    AuthenticateWithPasswordController,
+    UploadAttachmentController,
+  ],
   providers: [
     CreateAccountUseCase,
     AuthenticateWithPasswordUseCase,
@@ -32,7 +39,8 @@ import { AuthenticateWithPasswordUseCase } from './domain/forum/use-cases/authen
       useClass: PrismaAccountRepository,
     },
     { provide: TokenGenerator, useClass: JwtGenerator },
+    { provide: Uploader, useClass: R2Storage },
   ],
-  exports: [PrismaService, AccountRepository, TokenGenerator],
+  exports: [PrismaService, AccountRepository, TokenGenerator, Uploader],
 })
 export class AppModule {}
